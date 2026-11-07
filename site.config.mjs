@@ -12,7 +12,7 @@ export const site = {
   descriptor: 'Digital Growth Agency',
   tagline: 'Build Your Presence. Attract More Customers. Grow Smarter.',
   // Override at build time with the SITE_URL env var. Replace with your real domain.
-  siteUrl: process.env.SITE_URL || 'https://www.revenzaone.com',
+  siteUrl: process.env.SITE_URL || 'https://revenzaone.site',
   locale: 'en_IN',
   // Optional: set to e.g. 'Jaipur' later to add location-specific SEO copy & schema.
   seoLocation: '',
