@@ -1,0 +1,13 @@
+{
+  "name": "revenza-one-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Revenza One digital growth agency website (static, zero dependencies) with a serverless contact endpoint.",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node build.mjs && node scripts/serve.mjs",
+    "serve": "node scripts/serve.mjs"
+  }
+}
