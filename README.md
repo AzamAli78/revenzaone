@@ -15,11 +15,14 @@ Any `[INSERT ...]` value is hidden from the site until you fill it in.
 - **Add a portfolio project**: add an object to `portfolio` (set `kind: 'Client'` only for real, approved work; `image` can point to a real screenshot in `assets/img/portfolio/`).
 - **Images/logo**: `assets/img/`.
 
-## Deploy (Vercel)
-1. Push this folder to GitHub and import it in Vercel (framework preset: Other). `vercel.json` already sets the build command and output folder.
-2. Add environment variables (see `.env.example`): `SITE_URL`, `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`.
-3. Create a free Resend account, verify your sending domain, and create an API key.
-4. Add your domain in Vercel, then redeploy.
+## Deploy (Cloudflare Pages, free and allowed for business sites)
+1. In Cloudflare: **Workers & Pages → Create → Pages → Connect to Git**, pick this GitHub repo.
+2. Build settings: framework preset **None**, build command `node build.mjs`, build output directory `dist`.
+3. Add variables (Settings → Variables and Secrets, see `.env.example`): `SITE_URL`, `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`. Redeploy after adding them.
+4. Create a free Resend account, verify your sending domain, and create an API key.
+5. Custom domain: add the domain to Cloudflare (free plan), switch the nameservers at your registrar to the two Cloudflare gives you, then in the Pages project open **Custom domains** and add both `revenzaone.site` and `www.revenzaone.site`.
+
+How it fits together: `functions/api/contact.js` is the Cloudflare handler for the form, `api/contact.js` is the same handler for the local preview (and Vercel), and both use `lib/contact.js`. The build writes `dist/_headers` for security and cache headers. `vercel.json` is only used if you deploy to Vercel instead.
 
 Until the Resend variables are set, the contact form returns an honest "not connected yet" error and points visitors to WhatsApp. It never shows a fake success message.
 

@@ -1,21 +1,6 @@
-// Vercel serverless function: POST /api/contact
-// Sends the enquiry by email through Resend (https://resend.com).
-// Required env vars: RESEND_API_KEY, CONTACT_TO_EMAIL, CONTACT_FROM_EMAIL
-// If they are missing the function answers 503 — the website then shows an
-// honest error instead of a fake success message.
-
-const esc = (s = '') => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const clean = (v, max) => String(v ?? '').replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, max);
-
-// Very small in-memory rate limit (per warm instance). Use a real store for heavy traffic.
-const hits = new Map();
-function limited(ip) {
-  const now = Date.now();
-  const arr = (hits.get(ip) || []).filter((t) => now - t < 10 * 60 * 1000);
-  arr.push(now);
-  hits.set(ip, arr);
-  return arr.length > 5;
-}
+// Node-style handler for POST /api/contact (local preview via scripts/serve.mjs; also works on Vercel).
+// The live site runs on Cloudflare Pages: see functions/api/contact.js. Both use lib/contact.js.
+import { handleContact } from '../lib/contact.js';
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -23,64 +8,9 @@ export default async function handler(req, res) {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ ok: false, error: 'Method not allowed.' });
   }
-
   let body = req.body;
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = {}; } }
-  body = body || {};
-
-  // Honeypot: bots fill this. Pretend success without sending.
-  if (clean(body.website, 200)) return res.status(200).json({ ok: true });
-
-  const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
-  if (limited(ip)) return res.status(429).json({ ok: false, error: 'Too many requests.' });
-
-  const d = {
-    name: clean(body.name, 120),
-    business: clean(body.business, 160),
-    email: clean(body.email, 160),
-    phone: clean(body.phone, 40),
-    industry: clean(body.industry, 80),
-    budget: clean(body.budget, 80),
-    services: Array.isArray(body.services) ? body.services.map((s) => clean(s, 60)).filter(Boolean).slice(0, 15) : [],
-    details: clean(body.details, 4000),
-  };
-
-  if (d.name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email) || d.phone.replace(/\D/g, '').length < 8 || !d.services.length || d.details.length < 10) {
-    return res.status(400).json({ ok: false, error: 'Please check the form and try again.' });
-  }
-
-  const { RESEND_API_KEY, CONTACT_TO_EMAIL, CONTACT_FROM_EMAIL } = process.env;
-  if (!RESEND_API_KEY || !CONTACT_TO_EMAIL || !CONTACT_FROM_EMAIL) {
-    console.error('Contact form is not configured: set RESEND_API_KEY, CONTACT_TO_EMAIL and CONTACT_FROM_EMAIL.');
-    return res.status(503).json({ ok: false, error: 'The enquiry form is not connected yet.' });
-  }
-
-  const rows = [['Name', d.name], ['Business', d.business], ['Email', d.email], ['Phone / WhatsApp', d.phone], ['Industry', d.industry], ['Budget', d.budget], ['Services', d.services.join(', ')], ['Details', d.details]]
-    .filter(([, v]) => v);
-  const html = `<h2>New enquiry from the Revenza One website</h2><table cellpadding="8" style="border-collapse:collapse">${rows
-    .map(([k, v]) => `<tr><td style="border:1px solid #ddd"><strong>${esc(k)}</strong></td><td style="border:1px solid #ddd;white-space:pre-wrap">${esc(v)}</td></tr>`).join('')}</table>`;
-  const text = rows.map(([k, v]) => `${k}: ${v}`).join('\n');
-
-  try {
-    const r = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: CONTACT_FROM_EMAIL,
-        to: [CONTACT_TO_EMAIL],
-        reply_to: d.email,
-        subject: `New enquiry: ${d.name}${d.business ? ` (${d.business})` : ''}`,
-        html,
-        text,
-      }),
-    });
-    if (!r.ok) {
-      console.error('Resend error', r.status, await r.text());
-      return res.status(502).json({ ok: false, error: 'We could not send your enquiry right now.' });
-    }
-    return res.status(200).json({ ok: true });
-  } catch (err) {
-    console.error('Contact send failed', err);
-    return res.status(502).json({ ok: false, error: 'We could not send your enquiry right now.' });
-  }
+  const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '').split(',')[0].trim() || 'unknown';
+  const { status, data } = await handleContact({ body, ip, env: process.env });
+  return res.status(status).json(data);
 }

@@ -476,6 +476,15 @@ const today = new Date().toISOString().slice(0, 10);
 const urls = ['/', '/about/', '/services/', '/pricing/', '/portfolio/', '/contact/', '/privacy-policy/', '/terms-and-conditions/'];
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${abs(u)}</loc><lastmod>${today}</lastmod></url>`).join('\n')}\n</urlset>\n`);
 write('robots.txt', `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${abs('/sitemap.xml')}\n`);
+// Cloudflare Pages response headers (Vercel uses vercel.json instead).
+write('_headers', `/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+
+/assets/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+`);
 
 const missing = Object.entries(contact).filter(([k, v]) => k !== 'whatsappMessage' && !isSet(v)).map(([k]) => k);
 console.log(`Built ${urls.length + 1} pages to dist/`);
