@@ -1,0 +1,14 @@
+{
+  // Cloudflare Workers config. "name" must match the Worker's name in the Cloudflare dashboard.
+  "name": "revenza-one-site",
+  "main": "worker.js",
+  "compatibility_date": "2026-09-01",
+  // Runs before every deploy, so Cloudflare builds dist/ itself.
+  "build": { "command": "node build.mjs" },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}
