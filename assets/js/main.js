@@ -18,6 +18,27 @@
     });
   }
 
+  // ----- hero showreel: muted loop, button restarts it with sound -----
+  var film = document.getElementById('hero-film');
+  var soundBtn = document.querySelector('.hf-sound');
+  if (film && soundBtn) {
+    var label = soundBtn.querySelector('span');
+    var ICON_PLAY = '<path d="M7 4.5v15l12-7.5z" fill="currentColor"/>';
+    var ICON_MUTE = '<path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="m22 9-6 6M16 9l6 6"/>';
+    var setBtn = function (withSound) {
+      soundBtn.setAttribute('aria-pressed', String(withSound));
+      soundBtn.querySelector('svg').innerHTML = withSound ? ICON_MUTE : ICON_PLAY;
+      label.textContent = withSound ? 'Mute' : 'Watch with sound';
+    };
+    // Respect reduced-motion and data-saver: show the poster until the visitor presses play.
+    var calm = (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || (navigator.connection && navigator.connection.saveData);
+    if (calm) { film.removeAttribute('autoplay'); film.pause(); }
+    soundBtn.addEventListener('click', function () {
+      if (film.muted || film.paused) { film.muted = false; film.currentTime = 0; film.play().catch(function () {}); setBtn(true); }
+      else { film.muted = true; setBtn(false); }
+    });
+  }
+
   // ----- scroll reveal -----
   var items = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window) {

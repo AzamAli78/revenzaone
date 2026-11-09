@@ -30,6 +30,9 @@ const ICONS = {
   zap: '<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>',
   chat: '<path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20.5l1.7-5.4A8.4 8.4 0 1 1 21 11.5z"/>',
   check: '<path d="M20 6 9 17l-5-5"/>',
+  play: '<path d="M7 4.5v15l12-7.5z" fill="currentColor"/>',
+  sound: '<path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>',
+  mute: '<path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="m22 9-6 6M16 9l6 6"/>',
   arrow: '<path d="M5 12h14M12 5l7 7-7 7"/>',
   menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
   close: '<path d="M18 6 6 18M6 6l12 12"/>',
@@ -69,6 +72,18 @@ function visual(type, hue = 45) {
 }
 
 const videoTag = (p, attrs = '') => `<video controls playsinline preload="none" poster="${esc(p.image)}" aria-label="${esc(p.alt || p.title)}" ${attrs}><source src="${esc(p.video)}" type="video/mp4" /></video>`;
+
+function heroFilm() {
+  return `<figure class="hero-film">
+      <div class="hf-frame">
+        <video id="hero-film" autoplay muted loop playsinline preload="auto" poster="/assets/video/revenza-film-poster.jpg" aria-label="30-second Revenza One showreel: client websites, flyer designs, an AI video ad, pricing and the enquiry form">
+          <source src="/assets/video/revenza-film.mp4" type="video/mp4">
+        </video>
+        <button class="hf-sound" type="button" aria-pressed="false">${icon('play')}<span>Watch with sound</span></button>
+      </div>
+      <figcaption>Our work in 30 seconds</figcaption>
+    </figure>`;
+}
 
 function heroVisual() {
   return `<div class="hero-art" aria-label="Illustration of a digital marketing ecosystem: website, social creatives, AI video ad and analytics dashboard">
@@ -211,7 +226,7 @@ const pricingAnchorFor = { website: 'websites', social: 'social', 'ai-studio': '
 function homePage() {
   const body = `
 <section class="hero">
-  <div class="container hero-grid">
+  <div class="container hero-grid has-film">
     <div class="hero-copy">
       <p class="eyebrow">Digital Growth Agency</p>
       <h1>${esc(home.heroTitle)}</h1>
@@ -219,7 +234,7 @@ function homePage() {
       <div class="hero-cta"><a class="btn btn-gold btn-lg" href="/contact/">Let's Grow Your Business ${icon('arrow')}</a><a class="btn btn-ghost btn-lg" href="/services/">Explore Our Services</a></div>
       <p class="trust">${icon('check')} ${esc(home.heroTrust)}</p>
     </div>
-    ${heroVisual()}
+    ${heroFilm()}
   </div>
 </section>
 
