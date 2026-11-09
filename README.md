@@ -22,7 +22,7 @@ Any `[INSERT ...]` value is hidden from the site until you fill it in.
 4. Create a free Resend account, verify your sending domain, and create an API key.
 5. Custom domain: add the domain to Cloudflare (free plan), switch the nameservers at your registrar to the two Cloudflare gives you, then in the Pages project open **Custom domains** and add both `revenzaone.site` and `www.revenzaone.site`.
 
-Workers instead of Pages: if Cloudflare created a Worker, it uses `wrangler.jsonc` + `worker.js` (builds with `node build.mjs`, serves `dist/`, handles the form). The Worker's name in the dashboard must match `name` in `wrangler.jsonc` (`revenza-one-site`). Set the same four variables under the Worker's Settings → Variables and Secrets.
+Workers instead of Pages: if Cloudflare created a Worker, it uses `wrangler.jsonc` + `worker.js` (builds with `node build.mjs`, serves `dist/`, handles the form). The Worker's name in the dashboard must match `name` in `wrangler.jsonc` (`revenzaone-site`). Set the same four variables under the Worker's Settings → Variables and Secrets.
 
 How it fits together: `functions/api/contact.js` is the Cloudflare handler for the form, `api/contact.js` is the same handler for the local preview (and Vercel), and both use `lib/contact.js`. The build writes `dist/_headers` for security and cache headers. `vercel.json` is only used if you deploy to Vercel instead.
 

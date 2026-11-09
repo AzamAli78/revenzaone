@@ -1,6 +1,6 @@
 {
   // Cloudflare Workers config. "name" must match the Worker's name in the Cloudflare dashboard.
-  "name": "revenza-one-site",
+  "name": "revenzaone-site",
   "main": "worker.js",
   "compatibility_date": "2026-09-01",
   // Runs before every deploy, so Cloudflare builds dist/ itself.
