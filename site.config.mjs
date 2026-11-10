@@ -22,7 +22,7 @@ export const site = {
 
 export const contact = {
   email: '[INSERT BUSINESS EMAIL]',
-  whatsapp: '[INSERT WHATSAPP NUMBER]', // digits with country code, e.g. 919876543210
+  whatsapp: '918302590117', // digits with country code, e.g. 919876543210
   location: '[INSERT BUSINESS LOCATION]',
   instagram: '[INSERT INSTAGRAM URL]',
   linkedin: '[INSERT LINKEDIN URL]',
