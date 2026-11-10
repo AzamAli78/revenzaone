@@ -5,6 +5,11 @@
   "compatibility_date": "2026-09-01",
   // Runs before every deploy, so Cloudflare builds dist/ itself.
   "build": { "command": "node build.mjs" },
+  // Cloudflare attaches these domains (DNS records + HTTPS) on every deploy.
+  "routes": [
+    { "pattern": "revenzaone.site", "custom_domain": true },
+    { "pattern": "www.revenzaone.site", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
