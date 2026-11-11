@@ -137,6 +137,8 @@
     var parts = ["Hi Revenza One! I'm interested in your digital marketing services."];
     if (val('name')) parts.push('Name: ' + val('name'));
     if (val('business')) parts.push('Business: ' + val('business'));
+    if (val('phone')) parts.push('Phone: ' + val('phone'));
+    if (val('email')) parts.push('Email: ' + val('email'));
     if (selectedServices().length) parts.push('Services: ' + selectedServices().join(', '));
     if (val('budget')) parts.push('Budget: ' + val('budget'));
     if (val('details')) parts.push('Details: ' + val('details'));
@@ -151,6 +153,13 @@
 
   function show(kind, html) { status.className = 'form-status ' + kind; status.innerHTML = html; status.focus(); }
 
+  // When email delivery isn't available, hand the enquiry to WhatsApp so it is never lost.
+  function sendViaWhatsApp() {
+    var url = waBase.split('?')[0] + '?text=' + encodeURIComponent(waMessage());
+    show('ok', 'Opening WhatsApp with your details… Just press <strong>Send</strong> there. If it does not open, <a href="' + url + '" target="_blank" rel="noopener">tap here</a>.');
+    window.location.href = url;
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     status.className = 'form-status'; status.textContent = '';
@@ -163,16 +172,18 @@
     submit.disabled = true; var old = submit.textContent; submit.textContent = 'Sending…';
     var ctrl = new AbortController(); var to = setTimeout(function () { ctrl.abort(); }, 20000);
     fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: ctrl.signal })
-      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok && j.ok === true, msg: j.error }; }); })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok && j.ok === true, msg: j.error, status: r.status }; }); })
       .then(function (res) {
         if (res.ok) {
           form.reset();
           show('ok', '<strong>Thank you!</strong> Your enquiry has been sent. We will get back to you soon.');
+        } else if (res.status === 503 || res.status >= 500) {
+          sendViaWhatsApp(); // email not connected or failing: don't lose the lead
         } else {
           show('bad', (res.msg ? res.msg + ' ' : 'We could not send your enquiry right now. ') + 'Please try again, or use the <strong>Discuss on WhatsApp</strong> button instead.');
         }
       })
-      .catch(function () { show('bad', 'We could not reach the server. Please check your connection and try again, or use the <strong>Discuss on WhatsApp</strong> button instead.'); })
+      .catch(function () { sendViaWhatsApp(); })
       .then(function () { clearTimeout(to); submit.disabled = false; submit.textContent = old; });
   });
 })();

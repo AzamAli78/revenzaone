@@ -312,3 +312,8 @@ select { appearance: none; background-image: linear-gradient(45deg, transparent 
 .faq details[open] summary::after { content: "−"; }
 .faq summary:focus-visible { outline: 2px solid var(--gold-1); outline-offset: 2px; border-radius: 14px; }
 .faq details p { margin: 0; padding: 0 22px 20px; }
+
+/* city landing page */
+.price-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin-top: 14px; color: var(--muted); }
+.price-line strong { color: var(--text); font-size: 1.05rem; }
+.price-line .link-arrow { margin-left: auto; }

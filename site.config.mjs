@@ -14,8 +14,10 @@ export const site = {
   // Override at build time with the SITE_URL env var. Replace with your real domain.
   siteUrl: process.env.SITE_URL || 'https://revenzaone.site',
   locale: 'en_IN',
-  // Optional: set to e.g. 'Jaipur' later to add location-specific SEO copy & schema.
-  seoLocation: '',
+  // Home city: drives local SEO copy, page titles, structured data and the city landing page.
+  seoLocation: 'Udaipur',
+  seoRegion: 'Rajasthan',
+  // Service-area business: city shown, no street address.
   // Cloudflare Web Analytics token (dashboard: Analytics & Logs > Web Analytics). Empty = no tracking script.
   cfAnalyticsToken: '',
   currency: '₹',
@@ -23,9 +25,9 @@ export const site = {
 };
 
 export const contact = {
-  email: '[INSERT BUSINESS EMAIL]',
+  email: 'info@revenzaone.site',
   whatsapp: '918302590117', // digits with country code, e.g. 919876543210
-  location: '[INSERT BUSINESS LOCATION]',
+  location: 'Udaipur, Rajasthan · Serving businesses across India online',
   instagram: '[INSERT INSTAGRAM URL]',
   linkedin: '[INSERT LINKEDIN URL]',
   facebook: '[INSERT FACEBOOK URL]',
@@ -45,7 +47,7 @@ export const nav = [
 export const home = {
   heroTitle: 'Your Business Deserves More Than Just an Online Presence.',
   heroText:
-    'We combine creative marketing, AI-powered content and smart digital solutions to help your business get noticed, attract customers and grow.',
+    'A digital marketing agency in Udaipur. We combine creative marketing, AI-powered content and smart digital solutions to help businesses in Udaipur and across India get noticed, attract customers and grow.',
   heroTrust: 'Creative Thinking. Smart Technology. Business Growth.',
   introTitle: 'Everything Your Business Needs to Grow Digitally.',
   introText:
@@ -284,6 +286,13 @@ export const faqs = {
     { q: 'How do I get started?', a: 'Message us on WhatsApp or fill in the contact form with a few details about your business. We will suggest the right services, confirm deliverables and give you a final price before any work starts.' },
     { q: 'Do you guarantee rankings, followers or sales?', a: 'No. Nobody can honestly guarantee Google rankings, followers, leads or sales. We agree clear deliverables up front and report on what we did each month.' },
     { q: 'What is an AI UGC video ad?', a: 'A short vertical video ad in the style of user-generated content, made with an AI presenter and voiceover instead of a film shoot. A single video is {price:Single AI UGC Video}. AI-generated content is labelled as such where required.' },
+  ],
+  udaipur: [
+    { q: 'Is Revenza One based in Udaipur?', a: 'Yes. Revenza One is a digital marketing agency based in Udaipur, Rajasthan. We work with local businesses in Udaipur and, online, with businesses anywhere in India.' },
+    { q: 'Can you set up and manage my Google Business Profile in Udaipur?', a: 'Yes. Google Business Profile setup and verification help is {price:GBP Setup & Verification Assistance}, full optimization is {price:GBP Full Optimization}, and monthly management is {price:GBP Monthly Management} per month. A well-kept profile helps people searching on Google Maps in Udaipur find and contact you.' },
+    { q: 'Which Udaipur businesses do you work with?', a: 'Cafés and restaurants, shops, salons, clinics, gyms, coaching centres, real estate and other local businesses that want more enquiries from Google, Instagram and WhatsApp. One of our client websites is Bright Future Tuition Point in Udaipur.' },
+    { q: 'I am not in Udaipur. Can you still help?', a: 'Yes. Websites, social media, AI video ads, design and WhatsApp automation can all be done online, so we work with businesses across India over WhatsApp, phone and email.' },
+    { q: 'How do I contact you?', a: 'Message or call us on WhatsApp, email us, or fill in the form on the contact page. We reply with suggestions and a clear price before any work starts.' },
   ],
   pricing: [
     { q: 'How much does a business website cost?', a: 'A one-page business website is {price:One-Page Business Website} and a 3–5 page website is {price:Professional 3–5 Page Website}, both one-time. Domain and hosting are charged separately.' },

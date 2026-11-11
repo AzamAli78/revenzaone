@@ -19,6 +19,8 @@ const waLink = (msg = contact.whatsappMessage) => {
   const n = digits(contact.whatsapp);
   return `https://wa.me/${n}?text=${encodeURIComponent(msg)}`;
 };
+const telHref = () => (digits(contact.whatsapp) ? 'tel:+' + digits(contact.whatsapp) : '');
+const phoneText = () => '+' + digits(contact.whatsapp).replace(/^91(\d{5})(\d{5})$/, '91 $1 $2');
 const abs = (p) => site.siteUrl.replace(/\/$/, '') + p;
 
 const ICONS = {
@@ -111,15 +113,25 @@ function jsonLd() {
     logo: abs('/assets/img/logo-mark.png'),
     image: abs('/assets/img/og-image.png'),
     slogan: site.tagline,
-    description: 'Revenza One is an AI-powered digital growth agency offering website development, Google Business Profile optimization, social media marketing, AI UGC video ads, branding and WhatsApp automation.',
-    areaServed: { '@type': 'Country', name: 'India' },
+    description: `Revenza One is a digital marketing agency${site.seoLocation ? ` in ${site.seoLocation}, ${site.seoRegion}` : ''} offering website development, Google Business Profile optimization, social media marketing, AI UGC video ads, branding and WhatsApp automation for local businesses across India.`,
+    areaServed: [
+      ...(site.seoLocation ? [{ '@type': 'City', name: site.seoLocation }, { '@type': 'State', name: site.seoRegion }] : []),
+      { '@type': 'Country', name: 'India' },
+    ],
     priceRange: '₹₹',
+    currenciesAccepted: 'INR',
+    knowsAbout: ['Website development', 'Google Business Profile optimization', 'Local SEO', 'Social media marketing', 'AI UGC video ads', 'Branding and graphic design', 'WhatsApp Business automation'],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Digital marketing services',
+      itemListElement: services.map((s) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: s.title, description: s.short, url: abs('/services/') + '#' + s.id } })),
+    },
   };
   if (isSet(contact.email)) data.email = contact.email;
   if (digits(contact.whatsapp)) data.telephone = '+' + digits(contact.whatsapp);
-  if (isSet(contact.location)) data.address = { '@type': 'PostalAddress', addressLocality: contact.location, addressCountry: 'IN' };
+  // Service-area business: city and region only, no street address.
+  if (site.seoLocation) data.address = { '@type': 'PostalAddress', addressLocality: site.seoLocation, addressRegion: site.seoRegion, addressCountry: 'IN' };
   if (sameAs.length) data.sameAs = sameAs;
-  if (site.seoLocation) data.areaServed = { '@type': 'City', name: site.seoLocation };
   return `<script type="application/ld+json">${JSON.stringify(data)}</script>`;
 }
 
@@ -151,12 +163,13 @@ function footer() {
       ${social ? `<div class="social">${social}</div>` : ''}
     </div>
     <div><h2 class="foot-h">Quick Links</h2><ul>
-      <li><a href="/">Home</a></li><li><a href="/about/">About Us</a></li><li><a href="/services/">Services</a></li><li><a href="/pricing/">Pricing</a></li><li><a href="/portfolio/">Portfolio</a></li><li><a href="/contact/">Contact</a></li></ul></div>
+      <li><a href="/">Home</a></li><li><a href="/about/">About Us</a></li><li><a href="/services/">Services</a></li><li><a href="/pricing/">Pricing</a></li><li><a href="/portfolio/">Portfolio</a></li><li><a href="/contact/">Contact</a></li>${cityPath ? `<li><a href="${cityPath}">Digital Marketing in ${esc(site.seoLocation)}</a></li>` : ''}</ul></div>
     <div><h2 class="foot-h">Our Services</h2><ul>
       <li><a href="/services/#website">Website Development</a></li><li><a href="/pricing/#gbp">Google Business Profile</a></li><li><a href="/services/#social">Social Media Marketing</a></li><li><a href="/services/#ai-studio">AI UGC Advertisements</a></li><li><a href="/services/#branding">Branding &amp; Design</a></li><li><a href="/services/#automation">Business Automation</a></li></ul></div>
     <div><h2 class="foot-h">Contact</h2><ul class="foot-contact">
       ${li(esc(contact.email), contact.email, 'mailto:' + esc(contact.email), 'mail')}
-      <li>${icon('chat')}<a href="${waLink()}" target="_blank" rel="noopener">WhatsApp us${isSet(contact.whatsapp) ? '' : ''}</a></li>
+      ${telHref() ? `<li>${icon('phone')}<a href="${telHref()}">${phoneText()}</a></li>` : ''}
+      <li>${icon('chat')}<a href="${waLink()}" target="_blank" rel="noopener">WhatsApp us</a></li>
       ${isSet(contact.location) ? `<li>${icon('pin')}<span>${esc(contact.location)}</span></li>` : ''}
       ${li('Instagram', contact.instagram, esc(contact.instagram), 'insta')}
       ${li('LinkedIn', contact.linkedin, esc(contact.linkedin), 'linkedin')}
@@ -190,6 +203,8 @@ ${noindex ? '<meta name="robots" content="noindex" />' : '<meta name="robots" co
 <meta property="og:url" content="${canonical}" />
 <meta property="og:image" content="${abs('/assets/img/og-image.png')}" />
 <meta property="og:locale" content="${site.locale}" />
+${site.seoLocation ? `<meta name="geo.region" content="IN-RJ" />
+<meta name="geo.placename" content="${esc(site.seoLocation)}" />` : ''}
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/png" href="/assets/img/logo-mark.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -236,6 +251,34 @@ function faqSection(list, title = 'Frequently asked questions') {
   <div class="faq reveal">${items.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('')}</div>
 </div></section>
 <script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\u003c')}</script>`;
+}
+
+
+// City landing page for local SEO (e.g. /digital-marketing-agency-udaipur/).
+const cityPath = site.seoLocation ? `/digital-marketing-agency-${site.seoLocation.toLowerCase().replace(/[^a-z]+/g, '-')}/` : '';
+function cityPage() {
+  const city = esc(site.seoLocation), region = esc(site.seoRegion);
+  const offers = [
+    ['Business websites', 'Mobile-friendly websites with WhatsApp, click-to-call and Google Maps, so customers can reach you in one tap.', 'One-Page Business Website', '', '/services/#website'],
+    ['Google Business Profile', `Get found on Google Maps when people in ${city} search for what you sell. Setup, optimization, posts and review replies.`, 'GBP Full Optimization', '', '/pricing/#gbp'],
+    ['Social media management', 'Instagram and Facebook posts, reels and comment management in a consistent brand style.', 'Starter Plan', '/month', '/services/#social'],
+    ['AI UGC video ads', 'Short vertical video ads with an AI presenter and voiceover, without a film shoot. Clearly labelled as AI-generated.', 'Single AI UGC Video', '/video', '/services/#ai-studio'],
+    ['Flyers and branding', 'Offer flyers, festival creatives, menus, visiting cards, logos and brand kits, ready for print and Instagram.', 'Single Promotional Flyer / Poster', '', '/services/#branding'],
+    ['WhatsApp automation', 'WhatsApp Business setup, quick replies, greeting messages and automated enquiry handling.', 'WhatsApp Business Setup', '', '/services/#automation'],
+  ];
+  const body = `${pageHead(`${city}, ${region}`, `Digital Marketing Agency in ${city}`, `Revenza One helps ${city} businesses get found on Google, look professional on Instagram and turn enquiries into customers on WhatsApp. Based in ${city}, working with businesses across India online.`)}
+<section class="section tight" style="padding-top:0"><div class="container"><div class="hero-cta" style="justify-content:center">
+  <a class="btn btn-wa btn-lg" href="${waLink(`Hi Revenza One! I run a business in ${site.seoLocation} and I'd like to discuss digital marketing.`)}" target="_blank" rel="noopener">${WA_SVG} WhatsApp Us</a>
+  ${telHref() ? `<a class="btn btn-ghost btn-lg" href="${telHref()}">${icon('phone')} Call ${phoneText()}</a>` : ''}
+</div></div></section>
+<section class="section"><div class="container">
+  <div class="section-head reveal"><p class="eyebrow">Services in ${city}</p><h2>What we do for local businesses</h2><p>Prices are indicative and confirmed in writing before work starts.</p></div>
+  <div class="grid-3">${offers.map(([t, d, item, per, href], i) => `<article class="card reveal" style="--d:${(i % 3) * 70}ms"><h3>${esc(t)}</h3><p>${d}</p><p class="price-line"><strong>${esc(priceOf(item))}</strong>${per} <a class="link-arrow" href="${href}">Details ${icon('arrow')}</a></p></article>`).join('')}</div>
+</div></section>
+<section class="section tight"><div class="container narrow note-box reveal"><p><strong>Local work:</strong> we built the website for <a href="/portfolio/">Bright Future Tuition Point</a>, a tuition centre in ${city}. See more client work in our <a href="/portfolio/">portfolio</a>.</p></div></section>
+${faqSection(faqs.udaipur, `Questions from ${city} businesses`)}
+${ctaBanner(`Grow your ${city} business online`, 'Tell us what you sell and who you want to reach. We will suggest a starting plan with clear pricing.')}`;
+  return layout({ path: cityPath, title: `Digital Marketing Agency in ${site.seoLocation}, ${site.seoRegion}`, description: `Revenza One is a digital marketing agency in ${site.seoLocation}: websites, Google Business Profile, Instagram management, AI video ads, flyers and WhatsApp automation for local businesses.`, body });
 }
 
 // ---------- pages ----------
@@ -313,8 +356,8 @@ ${faqSection(faqs.home)}
 ${ctaBanner()}`;
   return layout({
     path: '/',
-    title: 'Revenza One | Digital Marketing Agency in India: Websites, Social Media, AI Video Ads & Automation',
-    description: 'Revenza One is an AI-powered digital growth agency in India. Website development, Google Business Profile, social media marketing, AI UGC video ads, branding and WhatsApp automation.',
+    title: 'Digital Marketing Agency in Udaipur | Revenza One',
+    description: 'Revenza One is a digital marketing agency in Udaipur, Rajasthan. Websites, Google Business Profile, social media, AI video ads and WhatsApp automation for local businesses across India.',
     body,
   });
 }
@@ -331,7 +374,7 @@ function aboutPage() {
   ${home.pillars.map((p) => `<div class="pillar"><h2>${esc(p.word)}</h2><p>${esc(p.text)}</p></div>`).join('')}
 </div></div></section>
 ${ctaBanner()}`;
-  return layout({ path: '/about/', title: 'About Us: Creative Digital Growth Agency', description: 'Revenza One is a creative, technology-driven digital marketing agency helping local businesses, entrepreneurs and growing brands build their digital presence and grow.', body });
+  return layout({ path: '/about/', title: 'About Us: Digital Growth Agency in Udaipur', description: 'Revenza One is a creative, technology-driven digital marketing agency in Udaipur, Rajasthan, helping local businesses, entrepreneurs and growing brands across India grow online.', body });
 }
 
 function servicesPage() {
@@ -350,7 +393,7 @@ ${services.map((s, i) => `<section class="section svc-detail" id="${s.id}">
 </section>`).join('')}
 <section class="section tight"><div class="container narrow note-box"><p><strong>Also available:</strong> Google Business Profile setup, optimization and management. Details and prices are on the <a href="/pricing/#gbp">pricing page</a>.</p></div></section>
 ${ctaBanner('Not sure which service you need?', 'Tell us about your business. We will recommend a sensible starting point.')}`;
-  return layout({ path: '/services/', title: 'Digital Marketing Services: Websites, Social Media, AI Video Ads & Automation', description: 'Website development, Google Business Profile optimization, social media marketing, AI UGC video ads, branding and WhatsApp automation from Revenza One.', body });
+  return layout({ path: '/services/', title: 'Digital Marketing Services in Udaipur', description: 'Website development, Google Business Profile optimization, social media marketing, AI UGC video ads, branding and WhatsApp automation from Revenza One, Udaipur.', body });
 }
 
 function pricingPage() {
@@ -386,7 +429,7 @@ ${pricing.groups.map((g, gi) => `<section class="section tight price-group" id="
 </div></div></section>
 ${faqSection(faqs.pricing, 'Pricing questions')}
 ${ctaBanner('Want an exact quote?', 'Share your requirements and we will confirm deliverables, timelines and a final price before starting.')}`;
-  return layout({ path: '/pricing/', title: 'Pricing & Packages: Websites, Social Media, GBP & Automation', description: 'Transparent indicative pricing in ₹ for website development, Google Business Profile, social media management, AI UGC video ads, branding and WhatsApp automation.', body });
+  return layout({ path: '/pricing/', title: 'Digital Marketing Pricing in Udaipur (₹)', description: 'Transparent indicative pricing in ₹ from Revenza One, Udaipur, for website development, Google Business Profile, social media management, AI UGC video ads, branding and WhatsApp automation.', body });
 }
 
 function portfolioPage() {
@@ -410,7 +453,7 @@ function portfolioPage() {
   <div class="row-actions"><a class="btn btn-gold" href="/contact/">Start a Similar Project</a><a class="btn btn-ghost" id="pd-visit" href="#" target="_blank" rel="noopener" hidden>Visit Live Website</a></div></div></div></dialog>
 <script type="application/json" id="portfolio-data">${data}</script>
 ${ctaBanner('Have a project in mind?', 'Tell us what you need. We will share ideas and a clear scope.')}`;
-  return layout({ path: '/portfolio/', title: 'Portfolio: Website, Video Ad, Social Media & Branding Concepts', description: 'Explore Revenza One concept projects across website development, AI UGC video ads, social media creatives, flyers and brand identity.', body });
+  return layout({ path: '/portfolio/', title: 'Portfolio: Websites, Flyers, AI Video Ads & Branding', description: 'Client websites, promotional flyers, an AI-generated sample video ad and brand concepts from Revenza One, a digital marketing agency in Udaipur.', body });
 }
 
 function contactPage() {
@@ -439,7 +482,7 @@ function contactPage() {
   <aside class="side">
     <div class="card"><h2>Prefer to chat?</h2><p>Message us directly on WhatsApp with your requirements.</p>
       <a class="btn btn-wa btn-block" href="${waLink()}" target="_blank" rel="noopener">${WA_SVG} Chat on WhatsApp</a></div>
-    <div class="card"><h2>Contact details</h2><ul class="foot-contact">${email}${loc}
+    <div class="card"><h2>Contact details</h2><ul class="foot-contact">${telHref() ? `<li>${icon('phone')}<a href="${telHref()}">${phoneText()}</a></li>` : ''}${email}${loc}
       <li>${icon('chat')}<a href="${waLink()}" target="_blank" rel="noopener">WhatsApp</a></li>
       ${isSet(contact.instagram) ? `<li>${icon('insta')}<a href="${esc(contact.instagram)}" target="_blank" rel="noopener">Instagram</a></li>` : ''}
       ${isSet(contact.linkedin) ? `<li>${icon('linkedin')}<a href="${esc(contact.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></li>` : ''}
@@ -448,7 +491,7 @@ function contactPage() {
     <div class="card"><h2>What happens next?</h2><ol class="mini-steps"><li>We review your requirements.</li><li>We reply with suggestions and a clear scope.</li><li>You approve deliverables and pricing before we start.</li></ol></div>
   </aside>
 </div></section>`;
-  return layout({ path: '/contact/', title: 'Contact Us: Get a Free Consultation', description: 'Tell Revenza One about your business and goals. Request a free consultation for website development, social media, Google Business Profile, ads and automation.', body });
+  return layout({ path: '/contact/', title: 'Contact Us in Udaipur: Free Consultation', description: 'Call, WhatsApp or email Revenza One in Udaipur. Request a free consultation for website development, social media, Google Business Profile, ads and automation.', body });
 }
 
 function legalPage(kind) {
@@ -506,12 +549,13 @@ write('services/index.html', servicesPage());
 write('pricing/index.html', pricingPage());
 write('portfolio/index.html', portfolioPage());
 write('contact/index.html', contactPage());
+if (cityPath) write(cityPath.slice(1) + 'index.html', cityPage());
 write('privacy-policy/index.html', legalPage('privacy'));
 write('terms-and-conditions/index.html', legalPage('terms'));
 write('404.html', notFound());
 
 const today = new Date().toISOString().slice(0, 10);
-const urls = ['/', '/about/', '/services/', '/pricing/', '/portfolio/', '/contact/', '/privacy-policy/', '/terms-and-conditions/'];
+const urls = ['/', '/about/', '/services/', '/pricing/', '/portfolio/', '/contact/', ...(cityPath ? [cityPath] : []), '/privacy-policy/', '/terms-and-conditions/'];
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${abs(u)}</loc><lastmod>${today}</lastmod></url>`).join('\n')}\n</urlset>\n`);
 write('robots.txt', `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${abs('/sitemap.xml')}\n`);
 // llms.txt (llmstxt.org): a plain summary for AI assistants, generated from the same content as the pages.
