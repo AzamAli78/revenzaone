@@ -5,7 +5,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   site, contact, nav, home, services, pricing, portfolio, portfolioCategories,
-  about, industries, serviceOptions, budgetOptions,
+  about, industries, serviceOptions, budgetOptions, faqs,
 } from './site.config.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
@@ -197,6 +197,7 @@ ${noindex ? '<meta name="robots" content="noindex" />' : '<meta name="robots" co
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/assets/css/styles.css" />
 ${jsonLd()}
+${site.cfAnalyticsToken ? `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${esc(site.cfAnalyticsToken)}"}'></script>` : ''}
 </head>
 <body>
 <script>document.documentElement.classList.add('js')</script>
@@ -218,6 +219,24 @@ const ctaBanner = (title = 'Ready to grow your business?', text = 'Tell us what 
   <div><h2>${title}</h2><p>${text}</p></div>
   <div class="cta-actions"><a class="btn btn-gold" href="/contact/">Start Your Project ${icon('arrow')}</a><a class="btn btn-ghost" href="${waLink()}" target="_blank" rel="noopener">Talk to Our Team</a></div>
 </div></div></section>`;
+
+
+// FAQ block + FAQPage structured data. {price:Name} pulls the price from the pricing list.
+const priceOf = (name) => {
+  const it = [...pricing.groups.flatMap((g) => g.items), ...pricing.bundles].find((x) => x.name === name);
+  if (!it) throw new Error('FAQ refers to unknown price: ' + name);
+  return it.price;
+};
+const fillPrices = (s) => s.replace(/{price:([^}]+)}/g, (_, n) => priceOf(n));
+function faqSection(list, title = 'Frequently asked questions') {
+  const items = list.map((f) => ({ q: f.q, a: fillPrices(f.a) }));
+  const ld = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: items.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) };
+  return `<section class="section"><div class="container narrow">
+  <div class="section-head reveal"><p class="eyebrow">FAQ</p><h2>${title}</h2></div>
+  <div class="faq reveal">${items.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('')}</div>
+</div></section>
+<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\u003c')}</script>`;
+}
 
 // ---------- pages ----------
 const contactServiceFor = { website: 'Website Development', social: 'Social Media Management', 'ai-studio': 'AI UGC Video Ads', branding: 'Branding', automation: 'WhatsApp Automation' };
@@ -290,6 +309,7 @@ function homePage() {
     <a class="btn btn-gold" href="/pricing/">View Pricing &amp; Packages ${icon('arrow')}</a>
   </div></div>
 </section>
+${faqSection(faqs.home)}
 ${ctaBanner()}`;
   return layout({
     path: '/',
@@ -364,6 +384,7 @@ ${pricing.groups.map((g, gi) => `<section class="section tight price-group" id="
   <h2>Important pricing notes</h2>
   <ul class="ticks">${pricing.terms.map((t) => `<li>${icon('check')}${esc(t)}</li>`).join('')}</ul>
 </div></div></section>
+${faqSection(faqs.pricing, 'Pricing questions')}
 ${ctaBanner('Want an exact quote?', 'Share your requirements and we will confirm deliverables, timelines and a final price before starting.')}`;
   return layout({ path: '/pricing/', title: 'Pricing & Packages: Websites, Social Media, GBP & Automation', description: 'Transparent indicative pricing in ₹ for website development, Google Business Profile, social media management, AI UGC video ads, branding and WhatsApp automation.', body });
 }

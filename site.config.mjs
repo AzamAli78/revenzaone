@@ -16,6 +16,8 @@ export const site = {
   locale: 'en_IN',
   // Optional: set to e.g. 'Jaipur' later to add location-specific SEO copy & schema.
   seoLocation: '',
+  // Cloudflare Web Analytics token (dashboard: Analytics & Logs > Web Analytics). Empty = no tracking script.
+  cfAnalyticsToken: '',
   currency: '₹',
   year: 2026,
 };
@@ -272,3 +274,22 @@ export const industries = ['Restaurant / Café', 'Retail / Shop', 'Salon / Beaut
 export const serviceOptions = ['Website Development', 'Google Business Profile', 'Social Media Management', 'AI UGC Video Ads', 'Flyer & Creative Designing', 'WhatsApp Automation', 'Branding', 'Other'];
 
 export const budgetOptions = ['Under ₹5,000', '₹5,000 – ₹15,000', '₹15,000 – ₹30,000', '₹30,000 – ₹60,000', '₹60,000+', 'Not sure yet'];
+
+// FAQ sections (also published as FAQPage structured data for Google and AI answers).
+// {price:Item Name} is filled in from the pricing list at build time, so answers never go stale.
+export const faqs = {
+  home: [
+    { q: 'What does Revenza One do?', a: 'Revenza One is a digital growth agency. We build websites, set up and manage Google Business Profiles, manage Instagram and Facebook, design flyers and brand kits, create AI-generated UGC-style video ads, and set up WhatsApp automation for enquiries.' },
+    { q: 'Which businesses do you work with?', a: 'Mainly local businesses and growing brands, such as cafés and restaurants, clinics, gyms, salons, coaching centres, shops and creators, that want to be easier to find online and get more enquiries.' },
+    { q: 'How do I get started?', a: 'Message us on WhatsApp or fill in the contact form with a few details about your business. We will suggest the right services, confirm deliverables and give you a final price before any work starts.' },
+    { q: 'Do you guarantee rankings, followers or sales?', a: 'No. Nobody can honestly guarantee Google rankings, followers, leads or sales. We agree clear deliverables up front and report on what we did each month.' },
+    { q: 'What is an AI UGC video ad?', a: 'A short vertical video ad in the style of user-generated content, made with an AI presenter and voiceover instead of a film shoot. A single video is {price:Single AI UGC Video}. AI-generated content is labelled as such where required.' },
+  ],
+  pricing: [
+    { q: 'How much does a business website cost?', a: 'A one-page business website is {price:One-Page Business Website} and a 3–5 page website is {price:Professional 3–5 Page Website}, both one-time. Domain and hosting are charged separately.' },
+    { q: 'Are these prices final?', a: 'No. All prices are indicative and in Indian Rupees. Your final quotation depends on the project scope and is confirmed in writing before work starts. Applicable taxes are extra.' },
+    { q: 'Are one-time and monthly charges combined?', a: 'Never. One-time projects such as a website are billed separately from monthly services such as social media management, so you always know what you pay once and what you pay every month.' },
+    { q: 'Is there a monthly plan for local businesses?', a: 'Yes. The Local Growth Plan is {price:Local Growth Plan} per month and covers Google Business Profile management, social media posts or reels, WhatsApp support for edits and a monthly report.' },
+    { q: 'Are WhatsApp platform fees or ad spend included?', a: 'No. Our prices cover our setup and management work. Fees charged by WhatsApp platforms, advertising budgets, domains, hosting and printing are paid separately where they apply.' },
+  ],
+};

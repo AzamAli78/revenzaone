@@ -1,5 +1,5 @@
 // Cloudflare Workers entry: serves the built site from ./dist and handles the contact form.
-// Static files are served before this code runs; only requests with no matching file reach it.
+// Runs before static files (run_worker_first) so it can send www traffic to the main domain.
 import { handleContact } from './lib/contact.js';
 
 const json = (status, data, headers = {}) =>
@@ -8,6 +8,10 @@ const json = (status, data, headers = {}) =>
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (url.hostname.startsWith('www.')) {
+      url.hostname = url.hostname.slice(4);
+      return Response.redirect(url.toString(), 301);
+    }
     if (url.pathname === '/api/contact' || url.pathname === '/api/contact/') {
       if (request.method !== 'POST') return json(405, { ok: false, error: 'Method not allowed.' }, { Allow: 'POST' });
       let body = {};
