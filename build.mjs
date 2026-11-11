@@ -512,6 +512,29 @@ const today = new Date().toISOString().slice(0, 10);
 const urls = ['/', '/about/', '/services/', '/pricing/', '/portfolio/', '/contact/', '/privacy-policy/', '/terms-and-conditions/'];
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${abs(u)}</loc><lastmod>${today}</lastmod></url>`).join('\n')}\n</urlset>\n`);
 write('robots.txt', `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${abs('/sitemap.xml')}\n`);
+// llms.txt (llmstxt.org): a plain summary for AI assistants, generated from the same content as the pages.
+write('llms.txt', [
+  `# ${site.shortName}`,
+  '',
+  `> ${site.shortName} is a digital growth agency in India for local businesses and growing brands: websites, Google Business Profile, social media, AI UGC video ads, branding and WhatsApp automation. All prices are indicative, in Indian Rupees.`,
+  '',
+  '## Services',
+  ...services.map((s) => `- [${s.title}](${abs('/services/')}#${s.id}): ${s.short}`),
+  '',
+  '## Pricing',
+  ...pricing.groups.map((g) => `- [${g.title}](${abs('/pricing/')}#${g.id}): ${g.items.map((i) => `${i.name} ${i.price}${i.billing === 'Monthly' ? '/month' : ''}`).join('; ')}`),
+  ...pricing.terms.map((t) => `- ${t}`),
+  '',
+  '## Pages',
+  `- [Portfolio](${abs('/portfolio/')}): client websites, flyer designs and an AI-generated sample video`,
+  `- [About](${abs('/about/')})`,
+  `- [Contact](${abs('/contact/')}): enquiry form and WhatsApp${digits(contact.whatsapp) ? ` (+${digits(contact.whatsapp)})` : ''}`,
+  '',
+  '## Optional',
+  `- [Privacy Policy](${abs('/privacy-policy/')})`,
+  `- [Terms & Conditions](${abs('/terms-and-conditions/')})`,
+  '',
+].join('\n'));
 // Cloudflare Pages response headers (Vercel uses vercel.json instead).
 write('_headers', `/*
   X-Content-Type-Options: nosniff
