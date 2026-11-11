@@ -439,7 +439,7 @@ function portfolioPage() {
   <div class="filters" role="group" aria-label="Filter projects"><button class="chip active" data-filter="all" aria-pressed="true">All</button>${portfolioCategories.map((c) => `<button class="chip" data-filter="${c.id}" aria-pressed="false">${esc(c.label)}</button>`).join('')}</div>
   <div class="grid-3 port-grid">
     ${portfolio.map((p) => `<article class="card port" data-cat="${p.category}">
-      <div class="port-vis${p.image ? ' has-img' : ''}${p.wide ? ' wide' : ''}"${p.ratio ? ` style="aspect-ratio:${p.ratio}"` : ''}>${p.image ? `<img src="${esc(p.image)}" alt="${esc(p.alt || p.title)}" width="1000" loading="lazy" />` : visual(p.visual, p.hue)}${p.video ? '<span class="play-badge" aria-hidden="true"></span>' : ''}<span class="kind k-${p.kind.toLowerCase()}">${p.kind === 'Concept' ? 'Concept project' : p.kind === 'Sample' ? 'AI-generated sample' : 'Client project'}</span></div>
+      <div class="port-vis${p.image ? ' has-img' : ''}${p.wide ? ' wide' : ''}"${p.ratio ? ` style="aspect-ratio:${p.ratio}"` : ''}>${p.image ? `<img src="${esc(p.image)}" alt="${esc(p.alt || p.title)}" width="1000" loading="lazy" />` : visual(p.visual, p.hue)}${p.video ? '<span class="play-badge" aria-hidden="true"></span>' : ''}<span class="kind k-${p.kind.toLowerCase()}">${p.kind === 'Concept' ? 'Concept project' : p.kind === 'Sample' ? 'AI-generated sample' : p.kind === 'Service' ? 'Our work' : 'Client project'}</span></div>
       <p class="cat">${esc(portfolioCategories.find((c) => c.id === p.category)?.label)}</p>
       <h3>${esc(p.title)}</h3><p>${esc(p.description)}</p>
       <button class="link-arrow btn-link" data-open="${p.id}">View Project ${icon('arrow')}</button></article>`).join('')}
