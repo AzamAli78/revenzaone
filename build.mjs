@@ -497,6 +497,8 @@ function write(rel, content) {
 if (existsSync(DIST)) rmSync(DIST, { recursive: true, force: true });
 mkdirSync(DIST, { recursive: true });
 cpSync(join(ROOT, 'assets'), join(DIST, 'assets'), { recursive: true });
+// Bing Webmaster Tools site verification; must stay at the site root.
+cpSync(join(ROOT, 'BingSiteAuth.xml'), join(DIST, 'BingSiteAuth.xml'));
 
 write('index.html', homePage());
 write('about/index.html', aboutPage());
