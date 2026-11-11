@@ -3,6 +3,7 @@
 import { mkdirSync, writeFileSync, cpSync, rmSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+const ASSET_V = Date.now().toString(36);
 import {
   site, contact, nav, home, services, pricing, portfolio, portfolioCategories,
   about, industries, serviceOptions, budgetOptions, faqs,
@@ -210,7 +211,7 @@ ${site.seoLocation ? `<meta name="geo.region" content="IN-RJ" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/assets/css/styles.css" />
+<link rel="stylesheet" href="/assets/css/styles.css?v=${ASSET_V}" />
 ${jsonLd()}
 ${site.cfAnalyticsToken ? `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${esc(site.cfAnalyticsToken)}"}'></script>` : ''}
 </head>
@@ -222,7 +223,7 @@ ${header(path)}
 ${body}
 </main>
 ${footer()}
-<script src="/assets/js/main.js" defer></script>
+<script src="/assets/js/main.js?v=${ASSET_V}" defer></script>
 </body>
 </html>`;
 }
