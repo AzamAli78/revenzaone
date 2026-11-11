@@ -50,20 +50,109 @@
     items.forEach(function (el) { el.classList.add('in'); });
   }
 
-  // ----- portfolio filter + dialog -----
+  // ----- portfolio carousel + filter + dialog -----
   var filters = document.querySelectorAll('.filters .chip');
-  var cards = document.querySelectorAll('.port');
+  var allCards = document.querySelectorAll('.port');
   var empty = document.querySelector('.empty');
+  var carousel = document.querySelector('.carousel');
+  var track = document.querySelector('.carousel-track');
+  var dotsWrap = document.querySelector('.carousel-dots');
+  var prevBtn = document.querySelector('.carousel-btn.prev');
+  var nextBtn = document.querySelector('.carousel-btn.next');
+  var autoInterval = null;
+  var currentSlide = 0;
+  var visibleCards = [];
+
+  function getPerView() {
+    if (window.innerWidth <= 700) return 1;
+    if (window.innerWidth <= 1020) return 2;
+    return 3;
+  }
+
+  function updateVisibleCards() {
+    var activeFilter = document.querySelector('.filters .chip.active');
+    var cat = activeFilter ? activeFilter.getAttribute('data-filter') : 'all';
+    visibleCards = [];
+    allCards.forEach(function (c) {
+      var show = cat === 'all' || c.getAttribute('data-cat') === cat;
+      c.style.display = show ? '' : 'none';
+      if (show) visibleCards.push(c);
+    });
+    if (empty) empty.hidden = visibleCards.length > 0;
+  }
+
+  function totalPages() {
+    var pv = getPerView();
+    return Math.max(1, Math.ceil(visibleCards.length / pv));
+  }
+
+  function buildDots() {
+    if (!dotsWrap) return;
+    dotsWrap.innerHTML = '';
+    var pages = totalPages();
+    for (var i = 0; i < pages; i++) {
+      var dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === currentSlide ? ' active' : '');
+      dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+      dot.setAttribute('data-slide', i);
+      dot.addEventListener('click', function () { goTo(parseInt(this.getAttribute('data-slide'))); });
+      dotsWrap.appendChild(dot);
+    }
+  }
+
+  function goTo(idx) {
+    var pages = totalPages();
+    currentSlide = ((idx % pages) + pages) % pages;
+    var pv = getPerView();
+    var cardW = track ? track.querySelector('.port:not([style*="display: none"])') : null;
+    if (cardW) {
+      var w = cardW.offsetWidth + 16;
+      track.style.transform = 'translateX(' + (-currentSlide * pv * w) + 'px)';
+    }
+    if (dotsWrap) {
+      dotsWrap.querySelectorAll('.carousel-dot').forEach(function (d, i) {
+        d.classList.toggle('active', i === currentSlide);
+      });
+    }
+  }
+
+  function startAuto() {
+    stopAuto();
+    autoInterval = setInterval(function () { goTo(currentSlide + 1); }, 3500);
+  }
+
+  function stopAuto() {
+    if (autoInterval) { clearInterval(autoInterval); autoInterval = null; }
+  }
+
+  if (carousel && track) {
+    updateVisibleCards();
+    buildDots();
+    goTo(0);
+    startAuto();
+
+    if (prevBtn) prevBtn.addEventListener('click', function () { goTo(currentSlide - 1); startAuto(); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { goTo(currentSlide + 1); startAuto(); });
+
+    carousel.addEventListener('mouseenter', stopAuto);
+    carousel.addEventListener('mouseleave', startAuto);
+
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () { buildDots(); goTo(0); }, 200);
+    });
+  }
+
   filters.forEach(function (f) {
     f.addEventListener('click', function () {
       var cat = f.getAttribute('data-filter');
       filters.forEach(function (x) { x.classList.toggle('active', x === f); x.setAttribute('aria-pressed', String(x === f)); });
-      var shown = 0;
-      cards.forEach(function (c) {
-        var show = cat === 'all' || c.getAttribute('data-cat') === cat;
-        c.hidden = !show; if (show) shown++;
-      });
-      if (empty) empty.hidden = shown > 0;
+      updateVisibleCards();
+      currentSlide = 0;
+      buildDots();
+      goTo(0);
+      startAuto();
     });
   });
 
