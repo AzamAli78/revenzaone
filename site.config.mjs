@@ -29,7 +29,7 @@ export const contact = {
   whatsapp: '918302590117', // digits with country code, e.g. 919876543210
   location: 'Udaipur, Rajasthan · Serving businesses across India online',
   instagram: '[INSERT INSTAGRAM URL]',
-  linkedin: '[INSERT LINKEDIN URL]',
+  linkedin: 'https://www.linkedin.com/company/revenza-one/',
   facebook: '[INSERT FACEBOOK URL]',
   whatsappMessage:
     "Hi Revenza One! I'm interested in your digital marketing services. I'd like to discuss my business requirements.",
