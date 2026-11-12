@@ -197,6 +197,7 @@ function layout({ path, title, description, body, noindex = false, ogType = 'web
 <link rel="canonical" href="${canonical}" />
 ${noindex ? '<meta name="robots" content="noindex" />' : '<meta name="robots" content="index, follow" />'}
 <meta name="theme-color" content="#050507" />
+${isSet(site.googleSiteVerification) ? `<meta name="google-site-verification" content="${esc(site.googleSiteVerification)}" />` : ''}
 <meta property="og:type" content="${ogType}" />
 <meta property="og:site_name" content="Revenza One" />
 <meta property="og:title" content="${esc(fullTitle)}" />

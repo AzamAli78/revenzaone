@@ -20,6 +20,8 @@ export const site = {
   // Service-area business: city shown, no street address.
   // Cloudflare Web Analytics token (dashboard: Analytics & Logs > Web Analytics). Empty = no tracking script.
   cfAnalyticsToken: '',
+  // Google Search Console verification: the content="..." value from the HTML tag method. Empty = no tag.
+  googleSiteVerification: '',
   currency: '₹',
   year: 2026,
 };
