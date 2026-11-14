@@ -315,13 +315,10 @@ function homePage() {
 <section class="section" id="core-services">
   <div class="container">
     <div class="section-head reveal"><p class="eyebrow">Our Core Services</p><h2>Five ways we help your business grow.</h2></div>
-    <div class="grid-3">
-      ${services.map((s, i) => `<article class="card svc reveal" style="--d:${(i % 3) * 70}ms">
-        <div class="svc-vis">${visual(s.visual, [42, 265, 300, 25, 160][i])}</div>
-        <span class="ic-wrap">${icon(s.icon)}</span>
-        <h3>${esc(s.title)}</h3><p>${esc(s.short)}</p>
-        <a class="link-arrow" href="/services/#${s.id}">Explore Services ${icon('arrow')}</a></article>`).join('')}
+    <div class="clouds reveal">
+      ${services.map((s, i) => `<a class="cloud" href="/services/#${s.id}" style="--f:${[7, 9, 8, 10, 6.5][i]}s;--fd:${[0, -3, -5, -2, -6][i]}s"><span class="ic-wrap">${icon(s.icon)}</span><span>${esc(s.title)}</span></a>`).join('')}
     </div>
+    <p class="cloud-cta"><a class="btn btn-gold" href="/services/">Explore Services ${icon('arrow')}</a></p>
   </div>
 </section>
 
