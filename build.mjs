@@ -110,6 +110,7 @@ function jsonLd() {
     '@type': 'ProfessionalService',
     '@id': abs('/#organization'),
     name: site.shortName,
+    alternateName: ['Revenzaone', 'REVENZA ONE'],
     url: abs('/'),
     logo: abs('/assets/img/logo-mark.png'),
     image: abs('/assets/img/og-image.png'),
@@ -280,7 +281,7 @@ function cityPage() {
 <section class="section tight"><div class="container narrow note-box reveal"><p><strong>Local work:</strong> we built the website for <a href="/portfolio/">Bright Future Tuition Point</a>, a tuition centre in ${city}. See more client work in our <a href="/portfolio/">portfolio</a>.</p></div></section>
 ${faqSection(faqs.udaipur, `Questions from ${city} businesses`)}
 ${ctaBanner(`Grow your ${city} business online`, 'Tell us what you sell and who you want to reach. We will suggest a starting plan with clear pricing.')}`;
-  return layout({ path: cityPath, title: `Digital Marketing Agency in ${site.seoLocation}, ${site.seoRegion}`, description: `Revenza One is a digital marketing agency in ${site.seoLocation}: websites, Google Business Profile, Instagram management, AI video ads, flyers and WhatsApp automation for local businesses.`, body });
+  return layout({ path: cityPath, title: `Digital Marketing Agency in ${site.seoLocation}, ${site.seoRegion}`, description: `Revenza One is a digital marketing agency in ${site.seoLocation}: websites, Google Business Profile, Instagram, AI video ads, flyers and WhatsApp automation.`, body });
 }
 
 // ---------- pages ----------
@@ -359,7 +360,7 @@ ${ctaBanner()}`;
   return layout({
     path: '/',
     title: 'Digital Marketing Agency in Udaipur | Revenza One',
-    description: 'Revenza One is a digital marketing agency in Udaipur, Rajasthan. Websites, Google Business Profile, social media, AI video ads and WhatsApp automation for local businesses across India.',
+    description: 'Digital marketing agency in Udaipur, Rajasthan. Websites, Google Business Profile, social media, AI video ads and WhatsApp automation for local businesses.',
     body,
   });
 }
@@ -376,7 +377,7 @@ function aboutPage() {
   ${home.pillars.map((p) => `<div class="pillar"><h2>${esc(p.word)}</h2><p>${esc(p.text)}</p></div>`).join('')}
 </div></div></section>
 ${ctaBanner()}`;
-  return layout({ path: '/about/', title: 'About Us: Digital Growth Agency in Udaipur', description: 'Revenza One is a creative, technology-driven digital marketing agency in Udaipur, Rajasthan, helping local businesses, entrepreneurs and growing brands across India grow online.', body });
+  return layout({ path: '/about/', title: 'About Us: Digital Growth Agency in Udaipur', description: 'Revenza One is a digital marketing agency in Udaipur, Rajasthan, helping local businesses and growing brands across India grow online.', body });
 }
 
 function servicesPage() {
@@ -431,7 +432,7 @@ ${pricing.groups.map((g, gi) => `<section class="section tight price-group" id="
 </div></div></section>
 ${faqSection(faqs.pricing, 'Pricing questions')}
 ${ctaBanner('Want an exact quote?', 'Share your requirements and we will confirm deliverables, timelines and a final price before starting.')}`;
-  return layout({ path: '/pricing/', title: 'Digital Marketing Pricing in Udaipur (₹)', description: 'Transparent indicative pricing in ₹ from Revenza One, Udaipur, for website development, Google Business Profile, social media management, AI UGC video ads, branding and WhatsApp automation.', body });
+  return layout({ path: '/pricing/', title: 'Digital Marketing Pricing in Udaipur (₹)', description: 'Indicative pricing in ₹ from Revenza One, Udaipur: websites, Google Business Profile, social media, AI video ads, branding and WhatsApp automation.', body });
 }
 
 function portfolioPage() {
@@ -458,7 +459,7 @@ function portfolioPage() {
   <div class="row-actions"><a class="btn btn-gold" href="/contact/">Start a Similar Project</a><a class="btn btn-ghost" id="pd-visit" href="#" target="_blank" rel="noopener" hidden>Visit Live Website</a></div></div></div></dialog>
 <script type="application/json" id="portfolio-data">${data}</script>
 ${ctaBanner('Have a project in mind?', 'Tell us what you need. We will share ideas and a clear scope.')}`;
-  return layout({ path: '/portfolio/', title: 'Portfolio: Websites, Flyers, AI Video Ads & Branding', description: 'Client websites, promotional flyers, an AI-generated sample video ad and brand concepts from Revenza One, a digital marketing agency in Udaipur.', body });
+  return layout({ path: '/portfolio/', title: 'Portfolio: Websites, Flyers & AI Video Ads', description: 'Client websites, promotional flyers, an AI-generated sample video ad and brand concepts from Revenza One, a digital marketing agency in Udaipur.', body });
 }
 
 function contactPage() {

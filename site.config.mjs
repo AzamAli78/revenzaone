@@ -257,7 +257,7 @@ export const portfolio = [
 export const about = {
   title: 'Creative Minds. Smart Technology. Better Business Growth.',
   body: [
-    'At Revenza One, we believe every business deserves a strong digital presence.',
+    'At Revenza One (sometimes written Revenzaone), we believe every business deserves a strong digital presence.',
     'We are a creative and technology-driven digital marketing agency focused on helping local businesses, entrepreneurs and growing brands navigate the digital world.',
     'From building professional websites and creating attention-grabbing advertisements to optimizing online visibility and implementing smart automation, we bring practical digital solutions under one roof.',
     'Our mission is simple: make digital growth more accessible, effective and achievable for businesses of every size.',
