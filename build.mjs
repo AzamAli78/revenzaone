@@ -312,12 +312,6 @@ function homePage() {
   </div>
 </section>
 
-<section class="section pillars-sec">
-  <div class="container pillars">
-    ${home.pillars.map((p, i) => `<div class="pillar reveal" style="--d:${i * 80}ms"><span class="pillar-n">0${i + 1}</span><h2>${esc(p.word)}</h2><p>${esc(p.text)}</p></div>`).join('')}
-  </div>
-</section>
-
 <section class="section" id="core-services">
   <div class="container">
     <div class="section-head reveal"><p class="eyebrow">Our Core Services</p><h2>Five ways we help your business grow.</h2></div>
@@ -373,9 +367,6 @@ function aboutPage() {
 <section class="section"><div class="container">
   <div class="grid-3">${about.blocks.map((b, i) => `<article class="card why reveal" style="--d:${(i % 3) * 70}ms"><span class="num">0${i + 1}</span><h3>${esc(b.title)}</h3><p>${esc(b.text)}</p></article>`).join('')}</div>
 </div></section>
-<section class="section"><div class="container"><div class="grid-3 pillars-mini">
-  ${home.pillars.map((p) => `<div class="pillar"><h2>${esc(p.word)}</h2><p>${esc(p.text)}</p></div>`).join('')}
-</div></div></section>
 ${ctaBanner()}`;
   return layout({ path: '/about/', title: 'About Us: Digital Growth Agency in Udaipur', description: 'Revenza One is a digital marketing agency in Udaipur, Rajasthan, helping local businesses and growing brands across India grow online.', body });
 }

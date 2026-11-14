@@ -148,11 +148,6 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .svc { padding: 0 0 26px; overflow: hidden; display: flex; flex-direction: column; }
 .svc > :not(.svc-vis) { margin-inline: 26px; }
 .svc-vis { aspect-ratio: 16 / 9; margin-bottom: 20px; border-bottom: 1px solid var(--line); } .svc .link-arrow { margin-top: auto; padding-top: 8px; }
-.pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 24px; overflow: hidden; background: var(--bg-2); }
-.pillar { padding: 40px 34px; border-right: 1px solid var(--line); } .pillar:last-child { border-right: 0; }
-.pillar h2 { background: var(--gold); -webkit-background-clip: text; background-clip: text; color: transparent; font-size: clamp(1.6rem, 2.6vw, 2.1rem); }
-.pillar-n { font-size: .8rem; letter-spacing: .14em; color: var(--muted); }
-.pillars-mini .pillar { border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-2); }
 .process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; position: relative; counter-reset: s; }
 .process::before { content: ""; position: absolute; top: 25px; left: 6%; right: 6%; height: 2px; background: repeating-linear-gradient(90deg, var(--gold-3) 0 8px, transparent 8px 16px); opacity: .6; }
 .process li { position: relative; padding-top: 0; }
@@ -279,9 +274,8 @@ select { appearance: none; background-image: linear-gradient(45deg, transparent 
   .main-nav.open { display: flex; } .main-nav a:not(.btn) { padding: 13px 14px; font-size: 1rem; }
 }
 @media (max-width: 700px) {
-  body { font-size: 15.5px; } .grid-4, .grid-3, .bundles, .process, .pillars { grid-template-columns: 1fr; }
+  body { font-size: 15.5px; } .grid-4, .grid-3, .bundles, .process { grid-template-columns: 1fr; }
   .carousel-track .port { min-width: calc(100% - 16px); max-width: calc(100% - 16px); }
-  .pillar { border-right: 0; border-bottom: 1px solid var(--line); } .pillar:last-child { border-bottom: 0; }
   .teaser, .cta-banner { flex-direction: column; align-items: flex-start; } .chip-list { grid-template-columns: 1fr; }
   .fgrid { grid-template-columns: 1fr; } .foot-grid { grid-template-columns: 1fr; }
   .hero-cta .btn { width: 100%; } .btn-lg { padding: 14px 22px; } .form-actions .btn { width: 100%; }

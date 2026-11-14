@@ -60,11 +60,6 @@ export const home = {
     { icon: 'target', title: 'Reach the Right Audience', text: 'Social media, Google Business Profile and AI-powered content aimed at the customers you actually want.' },
     { icon: 'chat', title: 'Convert Attention into Enquiries', text: 'WhatsApp flows, lead capture and follow-ups so no enquiry slips through the cracks.' },
   ],
-  pillars: [
-    { word: 'We Create', text: 'Websites, branding, flyers, videos and digital experiences.' },
-    { word: 'We Market', text: 'Social media, Google Business Profile and AI-powered content.' },
-    { word: 'We Automate', text: 'WhatsApp workflows, AI chatbots and lead management.' },
-  ],
   why: [
     { title: 'All-in-One Digital Solutions', text: 'From websites and branding to advertisements and automation, manage your digital requirements under one roof.' },
     { title: 'AI-Powered Creativity', text: 'We combine modern AI tools with creative strategy to produce engaging content and promotional videos.' },
